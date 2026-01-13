@@ -26,8 +26,8 @@ async function imageToDataUrl(url: string): Promise<string> {
 }
 
 export async function exportAsImage(elementId: string, fileName: string) {
-    const originalNode = document.getElementById(elementId)
-    if (!originalNode) {
+    const node = document.getElementById(elementId)
+    if (!node) {
         console.error(`Export error: Node with ID '${elementId}' not found`)
         alert('Export failed: Content area not found.')
         return
@@ -36,58 +36,39 @@ export async function exportAsImage(elementId: string, fileName: string) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     const pixelRatio = isMobile ? 2 : 3
 
-    let clone: HTMLElement | null = null
-
     try {
-        // 1. Clone the node
-        clone = originalNode.cloneNode(true) as HTMLElement
-
-        // 2. Hide the clone but keep it in the tree to preserve CSS variable inheritance (Tailwind v4)
-        clone.style.position = 'absolute'
-        clone.style.top = '-9999px'
-        clone.style.left = '-9999px'
-        clone.style.width = originalNode.offsetWidth + 'px'
-        clone.style.height = originalNode.offsetHeight + 'px'
-        clone.style.visibility = 'hidden'
-        clone.style.pointerEvents = 'none'
-
-        // Append near the original node to inherit same style context if scoped
-        originalNode.parentElement?.appendChild(clone)
-
-        // 3. Bake all images into Data URLs to bypass CORS and ensure capture
-        const images = Array.from(clone.querySelectorAll('img'))
+        // 1. Ensure all images are fully loaded and decoded
+        const images = Array.from(node.querySelectorAll('img'))
         await Promise.all(images.map(async (img) => {
-            const src = img.getAttribute('src')
-            if (src && !src.startsWith('data:')) {
-                try {
-                    const dataUrl = await imageToDataUrl(src)
-                    img.src = dataUrl
-                    // Wait for image to re-initialize
-                    await new Promise((resolve) => {
-                        if (img.complete) resolve(null)
-                        else {
-                            img.onload = () => resolve(null)
-                            img.onerror = () => resolve(null)
-                        }
-                    })
-                } catch (e) {
-                    console.warn('Failed to bake image:', src, e)
-                }
+            if (!img.complete) {
+                await new Promise((resolve) => {
+                    img.onload = resolve
+                    img.onerror = resolve
+                })
+            }
+            // Force browser to decode the image to ensure it's ready for canvas capture
+            try {
+                await img.decode()
+            } catch (e) {
+                console.warn('Image decode failed, proceeding anyway:', img.src)
             }
         }))
 
-        // 4. Final render delay
+        // 2. Small delay for fonts and complex styles to settle
         await new Promise(resolve => setTimeout(resolve, 500))
 
-        const dataUrl = await toPng(clone, {
+        // 3. Capture Live Node
+        const dataUrl = await toPng(node, {
             quality: 1.0,
             pixelRatio: pixelRatio,
             skipFonts: false,
             cacheBust: true,
             backgroundColor: '#ffffff',
+            // Increase the range for capturing elements that might be just outside current scroll
+            // but visible in the component container.
         })
 
-        // 5. Download
+        // 4. Trigger Download
         const link = document.createElement('a')
         link.href = dataUrl
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
@@ -98,11 +79,6 @@ export async function exportAsImage(elementId: string, fileName: string) {
 
     } catch (error) {
         console.error('Export failed:', error)
-        alert('Export failed. Please try again.')
-    } finally {
-        // 6. Cleanup clone
-        if (clone && clone.parentElement) {
-            clone.parentElement.removeChild(clone)
-        }
+        alert('Export failed. Please try again or check your browser permissions.')
     }
 }
