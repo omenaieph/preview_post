@@ -40,18 +40,48 @@ export default function InstagramPreview() {
     const [caption, setCaption] = useState("Exploring new horizons. 📸 #photography #adventure")
     const [likes, setLikes] = useState("4,281")
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
         if (files) {
+            setIsLoading(true)
+            const newImages: InstagramImage[] = []
+            let processed = 0
+
             Array.from(files).forEach(file => {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large (max 5MB)`)
+                    processed++
+                    if (processed === files.length) setIsLoading(false)
+                    return
+                }
+
                 const reader = new FileReader()
                 reader.onloadend = () => {
-                    setImages(prev => [...prev, {
+                    newImages.push({
                         id: Math.random().toString(),
                         url: reader.result as string
-                    }])
+                    })
+                    processed++
+                    if (processed === files.length) {
+                        setImages(prev => [...prev, ...newImages])
+                        setIsLoading(false)
+                    }
                 }
-                reader.readAsDataURL(file)
+                reader.onerror = () => {
+                    console.error("Error reading file")
+                    alert("Failed to load image. Please try again.")
+                    processed++
+                    if (processed === files.length) setIsLoading(false)
+                }
+                try {
+                    reader.readAsDataURL(file)
+                } catch (err) {
+                    console.error("FileReader error:", err)
+                    processed++
+                    if (processed === files.length) setIsLoading(false)
+                }
             })
         }
     }
@@ -59,9 +89,19 @@ export default function InstagramPreview() {
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large (max 5MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => setAvatar(reader.result as string)
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load avatar")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Avatar upload error:", error)
+                alert("Error uploading avatar")
+            }
         }
     }
 

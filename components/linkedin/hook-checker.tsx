@@ -26,9 +26,19 @@ export default function LinkedinHookChecker() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large (max 5MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => setMediaUrl(reader.result as string)
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load media")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Media upload error:", error)
+                alert("Error uploading media")
+            }
         }
     }
 
@@ -98,9 +108,19 @@ export default function LinkedinHookChecker() {
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0]
                                                     if (file) {
+                                                        if (file.size > 5 * 1024 * 1024) {
+                                                            alert("File is too large (max 5MB)")
+                                                            return
+                                                        }
                                                         const reader = new FileReader()
                                                         reader.onloadend = () => setAuthorAvatar(reader.result as string)
-                                                        reader.readAsDataURL(file)
+                                                        reader.onerror = () => alert("Failed to load avatar")
+                                                        try {
+                                                            reader.readAsDataURL(file)
+                                                        } catch (error) {
+                                                            console.error("Avatar upload error:", error)
+                                                            alert("Error uploading avatar")
+                                                        }
                                                     }
                                                 }}
                                                 accept="image/*"

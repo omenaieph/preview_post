@@ -61,18 +61,38 @@ export default function XPreview() {
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large (max 5MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => setAvatar(reader.result as string)
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load avatar")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Avatar upload error:", error)
+                alert("Error uploading avatar")
+            }
         }
     }
 
     const handleMediaUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large (max 5MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => updateTweet(id, { mediaUrl: reader.result as string })
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load media")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Media upload error:", error)
+                alert("Error uploading media")
+            }
         }
     }
 

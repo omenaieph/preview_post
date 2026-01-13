@@ -23,18 +23,38 @@ export default function TiktokSafeZonePreview() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 10 * 1024 * 1024) { // Allow larger videos/images for TikTok? Sticking to images for now. 
+                alert("File is too large (max 10MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => setMediaUrl(reader.result as string)
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load media")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Media upload error:", error)
+                alert("Error uploading media")
+            }
         }
     }
 
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large (max 5MB)")
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => setAvatarUrl(reader.result as string)
-            reader.readAsDataURL(file)
+            reader.onerror = () => alert("Failed to load avatar")
+            try {
+                reader.readAsDataURL(file)
+            } catch (error) {
+                console.error("Avatar upload error:", error)
+                alert("Error uploading avatar")
+            }
         }
     }
 
