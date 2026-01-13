@@ -69,19 +69,7 @@ export default function InstagramPreview() {
                         setIsLoading(false)
                     }
                 }
-                reader.onerror = () => {
-                    console.error("Error reading file")
-                    alert("Failed to load image. Please try again.")
-                    processed++
-                    if (processed === files.length) setIsLoading(false)
-                }
-                try {
-                    reader.readAsDataURL(file)
-                } catch (err) {
-                    console.error("FileReader error:", err)
-                    processed++
-                    if (processed === files.length) setIsLoading(false)
-                }
+                reader.readAsDataURL(file)
             })
         }
     }
@@ -95,13 +83,7 @@ export default function InstagramPreview() {
             }
             const reader = new FileReader()
             reader.onloadend = () => setAvatar(reader.result as string)
-            reader.onerror = () => alert("Failed to load avatar")
-            try {
-                reader.readAsDataURL(file)
-            } catch (error) {
-                console.error("Avatar upload error:", error)
-                alert("Error uploading avatar")
-            }
+            reader.readAsDataURL(file)
         }
     }
 

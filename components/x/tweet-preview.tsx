@@ -67,13 +67,7 @@ export default function XPreview() {
             }
             const reader = new FileReader()
             reader.onloadend = () => setAvatar(reader.result as string)
-            reader.onerror = () => alert("Failed to load avatar")
-            try {
-                reader.readAsDataURL(file)
-            } catch (error) {
-                console.error("Avatar upload error:", error)
-                alert("Error uploading avatar")
-            }
+            reader.readAsDataURL(file)
         }
     }
 
@@ -86,13 +80,7 @@ export default function XPreview() {
             }
             const reader = new FileReader()
             reader.onloadend = () => updateTweet(id, { mediaUrl: reader.result as string })
-            reader.onerror = () => alert("Failed to load media")
-            try {
-                reader.readAsDataURL(file)
-            } catch (error) {
-                console.error("Media upload error:", error)
-                alert("Error uploading media")
-            }
+            reader.readAsDataURL(file)
         }
     }
 

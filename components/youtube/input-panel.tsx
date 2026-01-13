@@ -31,16 +31,7 @@ export function YoutubeInputPanel({ data, onChange, isMobile, onMobileChange }: 
             reader.onloadend = () => {
                 handleChange(key, reader.result as string)
             }
-            reader.onerror = () => {
-                console.error("Error reading file")
-                alert("Failed to provide image. Please try again.")
-            }
-            try {
-                reader.readAsDataURL(file)
-            } catch (error) {
-                console.error("File upload error:", error)
-                alert("Error uploading file")
-            }
+            reader.readAsDataURL(file)
         }
     }
 

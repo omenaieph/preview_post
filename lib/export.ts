@@ -34,7 +34,9 @@ export async function exportAsImage(elementId: string, fileName: string) {
 
     // Mobile detection (simple heuristic)
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    const pixelRatio = isMobile ? 2 : 3 // reduce ratio on mobile to save memory
+    // Reduce pixel ratio on mobile to avoid canvas memory limits (crash/blank image)
+    // Desktop gets high res (3), Mobile gets safe res (2)
+    const pixelRatio = isMobile ? 2 : 3
 
     try {
         // Clone the node so we don't mess up the live UI
@@ -71,29 +73,16 @@ export async function exportAsImage(elementId: string, fileName: string) {
         }))
 
         // Allow any extra assets/fonts to settle
-        // Increased delay for mobile
-        await new Promise(resolve => setTimeout(resolve, isMobile ? 1000 : 300))
+        // Slightly longer delay for mobile devices
+        await new Promise(resolve => setTimeout(resolve, isMobile ? 500 : 300))
 
-        let dataUrl = ''
-        try {
-            dataUrl = await toPng(node, {
-                quality: 1.0,
-                pixelRatio: pixelRatio,
-                skipFonts: false,
-                cacheBust: true,
-                backgroundColor: '#ffffff',
-            })
-        } catch (initialError) {
-            console.warn('Initial export failed, retrying with lower quality/ratio...', initialError)
-            // Fallback retry for mobile/memory issues
-            dataUrl = await toPng(node, {
-                quality: 0.9,
-                pixelRatio: 1,
-                skipFonts: false,
-                cacheBust: true,
-                backgroundColor: '#ffffff',
-            })
-        }
+        const dataUrl = await toPng(node, {
+            quality: 1.0,
+            pixelRatio: pixelRatio,
+            skipFonts: false,
+            cacheBust: true,
+            backgroundColor: '#ffffff',
+        })
 
         // Clean up the clone
         document.body.removeChild(node)
@@ -112,6 +101,6 @@ export async function exportAsImage(elementId: string, fileName: string) {
         // Fallback cleanup if node was added
         const nodes = document.querySelectorAll('[style*="position: fixed; top: -9999px"]')
         nodes.forEach(n => n.remove())
-        alert('Export failed. Please try again or use a desktop browser.')
+        alert('Export failed. Please try again.')
     }
 }
