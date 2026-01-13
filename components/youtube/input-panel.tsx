@@ -70,7 +70,7 @@ export function YoutubeInputPanel({ data, onChange, isMobile, onMobileChange }: 
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="views">Views</Label>
                             <Input

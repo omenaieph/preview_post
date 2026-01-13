@@ -62,7 +62,7 @@ export default function LinkedinHookChecker() {
                             {/* Profile Section */}
                             <div className="space-y-4 pt-2">
                                 <h3 className="text-sm font-medium text-muted-foreground">Profile & Stats</h3>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="authorName">Name</Label>
                                         <Input
@@ -106,7 +106,7 @@ export default function LinkedinHookChecker() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="likes">Likes</Label>
                                         <Input

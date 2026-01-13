@@ -109,7 +109,7 @@ export default function XPreview() {
                             <CardTitle>Profile Details</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-4">
                                 <div className="space-y-2 flex-1">
                                     <Label>Name</Label>
                                     <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -183,7 +183,7 @@ export default function XPreview() {
                         <CardHeader>
                             <CardTitle className="text-sm">Engagement Metrics</CardTitle>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-2 gap-4">
+                        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-xs">Replies</Label>
                                 <Input value={metrics.replies} onChange={(e) => setMetrics({ ...metrics, replies: e.target.value })} />
