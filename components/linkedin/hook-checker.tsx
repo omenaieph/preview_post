@@ -25,15 +25,11 @@ export default function LinkedinHookChecker() {
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File is too large (max 5MB)")
-                return
-            }
-            const reader = new FileReader()
-            reader.onloadend = () => setMediaUrl(reader.result as string)
-            reader.readAsDataURL(file)
-        }
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => setMediaUrl(reader.result as string)
+        reader.readAsDataURL(file)
     }
 
     const isTruncated = content.length > TRUNCATION_LIMIT

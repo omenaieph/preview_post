@@ -60,28 +60,20 @@ export default function XPreview() {
 
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File is too large (max 5MB)")
-                return
-            }
-            const reader = new FileReader()
-            reader.onloadend = () => setAvatar(reader.result as string)
-            reader.readAsDataURL(file)
-        }
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => setAvatar(reader.result as string)
+        reader.readAsDataURL(file)
     }
 
     const handleMediaUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File is too large (max 5MB)")
-                return
-            }
-            const reader = new FileReader()
-            reader.onloadend = () => updateTweet(id, { mediaUrl: reader.result as string })
-            reader.readAsDataURL(file)
-        }
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => updateTweet(id, { mediaUrl: reader.result as string })
+        reader.readAsDataURL(file)
     }
 
     const getThemeStyles = () => {

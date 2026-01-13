@@ -22,17 +22,13 @@ export function YoutubeInputPanel({ data, onChange, isMobile, onMobileChange }: 
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, key: keyof YoutubePreviewData) => {
         const file = e.target.files?.[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File is too large (max 5MB)")
-                return
-            }
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                handleChange(key, reader.result as string)
-            }
-            reader.readAsDataURL(file)
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            handleChange(key, reader.result as string)
         }
+        reader.readAsDataURL(file)
     }
 
     return (

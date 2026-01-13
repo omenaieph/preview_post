@@ -29,54 +29,57 @@ export async function exportAsImage(elementId: string, fileName: string) {
     const originalNode = document.getElementById(elementId)
     if (!originalNode) {
         console.error(`Export error: Node with ID '${elementId}' not found`)
+        alert('Export failed: Content area not found.')
         return
     }
 
-    // Mobile detection (simple heuristic)
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    // Reduce pixel ratio on mobile to avoid canvas memory limits (crash/blank image)
-    // Desktop gets high res (3), Mobile gets safe res (2)
     const pixelRatio = isMobile ? 2 : 3
 
+    let clone: HTMLElement | null = null
+
     try {
-        // Clone the node so we don't mess up the live UI
-        const node = originalNode.cloneNode(true) as HTMLElement
-        node.style.position = 'fixed'
-        node.style.top = '-9999px'
-        node.style.left = '-9999px'
-        node.style.width = originalNode.offsetWidth + 'px'
-        node.style.height = originalNode.offsetHeight + 'px'
-        document.body.appendChild(node)
+        // 1. Clone the node
+        clone = originalNode.cloneNode(true) as HTMLElement
 
-        // Find all images in the clone and convert them to Data URLs
-        const images = Array.from(node.querySelectorAll('img'))
+        // 2. Hide the clone but keep it in the tree to preserve CSS variable inheritance (Tailwind v4)
+        clone.style.position = 'absolute'
+        clone.style.top = '-9999px'
+        clone.style.left = '-9999px'
+        clone.style.width = originalNode.offsetWidth + 'px'
+        clone.style.height = originalNode.offsetHeight + 'px'
+        clone.style.visibility = 'hidden'
+        clone.style.pointerEvents = 'none'
+
+        // Append near the original node to inherit same style context if scoped
+        originalNode.parentElement?.appendChild(clone)
+
+        // 3. Bake all images into Data URLs to bypass CORS and ensure capture
+        const images = Array.from(clone.querySelectorAll('img'))
         await Promise.all(images.map(async (img) => {
-            const originalSrc = img.src
-            if (originalSrc && !originalSrc.startsWith('data:')) {
+            const src = img.getAttribute('src')
+            if (src && !src.startsWith('data:')) {
                 try {
-                    const dataUrl = await imageToDataUrl(originalSrc)
+                    const dataUrl = await imageToDataUrl(src)
                     img.src = dataUrl
-
-                    // Wait for the new src to be loaded and decoded
+                    // Wait for image to re-initialize
                     await new Promise((resolve) => {
-                        if (img.complete) {
-                            img.decode().then(resolve).catch(resolve)
-                        } else {
-                            img.onload = () => img.decode().then(resolve).catch(resolve)
+                        if (img.complete) resolve(null)
+                        else {
+                            img.onload = () => resolve(null)
                             img.onerror = () => resolve(null)
                         }
                     })
-                } catch (err) {
-                    console.warn('Failed to convert image for export:', originalSrc, err)
+                } catch (e) {
+                    console.warn('Failed to bake image:', src, e)
                 }
             }
         }))
 
-        // Allow any extra assets/fonts to settle
-        // Slightly longer delay for mobile devices
-        await new Promise(resolve => setTimeout(resolve, isMobile ? 500 : 300))
+        // 4. Final render delay
+        await new Promise(resolve => setTimeout(resolve, 500))
 
-        const dataUrl = await toPng(node, {
+        const dataUrl = await toPng(clone, {
             quality: 1.0,
             pixelRatio: pixelRatio,
             skipFonts: false,
@@ -84,10 +87,7 @@ export async function exportAsImage(elementId: string, fileName: string) {
             backgroundColor: '#ffffff',
         })
 
-        // Clean up the clone
-        document.body.removeChild(node)
-
-        // Standard download logic
+        // 5. Download
         const link = document.createElement('a')
         link.href = dataUrl
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
@@ -98,9 +98,11 @@ export async function exportAsImage(elementId: string, fileName: string) {
 
     } catch (error) {
         console.error('Export failed:', error)
-        // Fallback cleanup if node was added
-        const nodes = document.querySelectorAll('[style*="position: fixed; top: -9999px"]')
-        nodes.forEach(n => n.remove())
         alert('Export failed. Please try again.')
+    } finally {
+        // 6. Cleanup clone
+        if (clone && clone.parentElement) {
+            clone.parentElement.removeChild(clone)
+        }
     }
 }

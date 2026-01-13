@@ -44,47 +44,45 @@ export default function InstagramPreview() {
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
-        if (files) {
-            setIsLoading(true)
-            const newImages: InstagramImage[] = []
-            let processed = 0
+        if (!files || files.length === 0) return
 
-            Array.from(files).forEach(file => {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert(`File ${file.name} is too large (max 5MB)`)
-                    processed++
-                    if (processed === files.length) setIsLoading(false)
-                    return
-                }
+        setIsLoading(true)
+        const newImages: InstagramImage[] = []
+        let processed = 0
 
-                const reader = new FileReader()
-                reader.onloadend = () => {
-                    newImages.push({
-                        id: Math.random().toString(),
-                        url: reader.result as string
-                    })
-                    processed++
-                    if (processed === files.length) {
-                        setImages(prev => [...prev, ...newImages])
-                        setIsLoading(false)
-                    }
+        Array.from(files).forEach(file => {
+            if (file.size > 10 * 1024 * 1024) { // Upped to 10MB for better UX, but alerted
+                alert(`File ${file.name} is very large. Processing might take a moment.`)
+            }
+
+            const reader = new FileReader()
+            reader.onload = () => {
+                newImages.push({
+                    id: Math.random().toString(),
+                    url: reader.result as string
+                })
+                processed++
+                if (processed === files.length) {
+                    setImages(prev => [...prev, ...newImages])
+                    setIsLoading(false)
                 }
-                reader.readAsDataURL(file)
-            })
-        }
+            }
+            reader.onerror = () => {
+                console.error("FileReader error")
+                processed++
+                if (processed === files.length) setIsLoading(false)
+            }
+            reader.readAsDataURL(file)
+        })
     }
 
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File is too large (max 5MB)")
-                return
-            }
-            const reader = new FileReader()
-            reader.onloadend = () => setAvatar(reader.result as string)
-            reader.readAsDataURL(file)
-        }
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => setAvatar(reader.result as string)
+        reader.readAsDataURL(file)
     }
 
     const removeImage = (id: string) => {
