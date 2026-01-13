@@ -23,14 +23,18 @@ export default function TiktokSafeZonePreview() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            setMediaUrl(URL.createObjectURL(file))
+            const reader = new FileReader()
+            reader.onloadend = () => setMediaUrl(reader.result as string)
+            reader.readAsDataURL(file)
         }
     }
 
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            setAvatarUrl(URL.createObjectURL(file))
+            const reader = new FileReader()
+            reader.onloadend = () => setAvatarUrl(reader.result as string)
+            reader.readAsDataURL(file)
         }
     }
 

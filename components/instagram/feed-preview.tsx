@@ -43,11 +43,25 @@ export default function InstagramPreview() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
         if (files) {
-            const newImages = Array.from(files).map(file => ({
-                id: Math.random().toString(),
-                url: URL.createObjectURL(file)
-            }))
-            setImages([...images, ...newImages])
+            Array.from(files).forEach(file => {
+                const reader = new FileReader()
+                reader.onloadend = () => {
+                    setImages(prev => [...prev, {
+                        id: Math.random().toString(),
+                        url: reader.result as string
+                    }])
+                }
+                reader.readAsDataURL(file)
+            })
+        }
+    }
+
+    const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onloadend = () => setAvatar(reader.result as string)
+            reader.readAsDataURL(file)
         }
     }
 
@@ -95,7 +109,20 @@ export default function InstagramPreview() {
                             </div>
                             <div className="space-y-2">
                                 <Label>Avatar URL</Label>
-                                <Input value={avatar} onChange={(e) => setAvatar(e.target.value)} />
+                                <div className="flex gap-2">
+                                    <Input value={avatar} onChange={(e) => setAvatar(e.target.value)} className="flex-1" />
+                                    <div className="relative">
+                                        <Input
+                                            type="file"
+                                            className="absolute inset-0 opacity-0 cursor-pointer w-10 px-0"
+                                            onChange={handleAvatarUpload}
+                                            accept="image/*"
+                                        />
+                                        <Button size="icon" variant="outline" type="button" className="pointer-events-none">
+                                            <Upload className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Likes Count</Label>

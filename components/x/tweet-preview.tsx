@@ -60,12 +60,20 @@ export default function XPreview() {
 
     const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) setAvatar(URL.createObjectURL(file))
+        if (file) {
+            const reader = new FileReader()
+            reader.onloadend = () => setAvatar(reader.result as string)
+            reader.readAsDataURL(file)
+        }
     }
 
     const handleMediaUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) updateTweet(id, { mediaUrl: URL.createObjectURL(file) })
+        if (file) {
+            const reader = new FileReader()
+            reader.onloadend = () => updateTweet(id, { mediaUrl: reader.result as string })
+            reader.readAsDataURL(file)
+        }
     }
 
     const getThemeStyles = () => {

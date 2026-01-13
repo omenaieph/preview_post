@@ -23,8 +23,11 @@ export function YoutubeInputPanel({ data, onChange, isMobile, onMobileChange }: 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, key: keyof YoutubePreviewData) => {
         const file = e.target.files?.[0]
         if (file) {
-            const url = URL.createObjectURL(file)
-            handleChange(key, url)
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                handleChange(key, reader.result as string)
+            }
+            reader.readAsDataURL(file)
         }
     }
 

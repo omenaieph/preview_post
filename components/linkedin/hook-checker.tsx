@@ -26,8 +26,9 @@ export default function LinkedinHookChecker() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            const url = URL.createObjectURL(file)
-            setMediaUrl(url)
+            const reader = new FileReader()
+            reader.onloadend = () => setMediaUrl(reader.result as string)
+            reader.readAsDataURL(file)
         }
     }
 
@@ -96,7 +97,11 @@ export default function LinkedinHookChecker() {
                                                 className="absolute inset-0 opacity-0 cursor-pointer w-10 px-0"
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0]
-                                                    if (file) setAuthorAvatar(URL.createObjectURL(file))
+                                                    if (file) {
+                                                        const reader = new FileReader()
+                                                        reader.onloadend = () => setAuthorAvatar(reader.result as string)
+                                                        reader.readAsDataURL(file)
+                                                    }
                                                 }}
                                                 accept="image/*"
                                             />
