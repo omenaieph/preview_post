@@ -36,9 +36,14 @@ export function YoutubePreviewer() {
         <div className="flex flex-col gap-6 min-h-[calc(100vh-4rem)] p-6 overflow-y-auto">
             <div className="flex items-center justify-between shrink-0">
                 <h2 className="text-2xl font-bold tracking-tight">YouTube Previewer</h2>
-                <Button onClick={handleExport} className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0 shadow-lg shadow-red-500/20">
-                    Export Image
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                    <Button onClick={handleExport} className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0 shadow-lg shadow-red-500/20">
+                        Export Image
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground block lg:hidden">
+                        *iPhone users: Click twice if image is blank
+                    </span>
+                </div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6 shrink-0 min-h-[600px]">

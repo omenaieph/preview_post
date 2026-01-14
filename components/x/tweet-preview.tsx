@@ -100,12 +100,17 @@ export default function XPreview() {
                             <TabsTrigger value="dark">Lights Out</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <Button
-                        onClick={() => exportAsImage("x-preview-area", "x-tweet-preview")}
-                        className="bg-zinc-100 hover:bg-zinc-200 text-black font-bold border-0 shadow-lg"
-                    >
-                        Export PNG
-                    </Button>
+                    <div className="flex flex-col items-end gap-1">
+                        <Button
+                            onClick={() => exportAsImage("x-preview-area", "x-tweet-preview")}
+                            className="bg-zinc-100 hover:bg-zinc-200 text-black font-bold border-0 shadow-lg"
+                        >
+                            Export PNG
+                        </Button>
+                        <span className="text-[10px] text-zinc-500 block lg:hidden">
+                            *iPhone users: Click twice if image is blank
+                        </span>
+                    </div>
                 </div>
             </div>
 

@@ -42,12 +42,17 @@ export default function TiktokSafeZonePreview() {
         <div className="flex flex-col gap-6 min-h-[calc(100vh-4rem)] p-6 overflow-y-auto">
             <div className="flex items-center justify-between shrink-0">
                 <h2 className="text-2xl font-bold tracking-tight">TikTok Safe Zone Previewer</h2>
-                <Button
-                    onClick={() => exportAsImage("tiktok-preview-area", "tiktok-safe-zone")}
-                    className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] hover:opacity-90 text-black font-bold border-0 shadow-lg shadow-pink-500/20"
-                >
-                    Export Image
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                    <Button
+                        onClick={() => exportAsImage("tiktok-preview-area", "tiktok-safe-zone")}
+                        className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] hover:opacity-90 text-black font-bold border-0 shadow-lg shadow-pink-500/20"
+                    >
+                        Export Image
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground block lg:hidden">
+                        *iPhone users: Click twice if image is blank
+                    </span>
+                </div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 shrink-0 min-h-[800px]">

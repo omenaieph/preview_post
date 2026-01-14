@@ -106,12 +106,17 @@ export default function InstagramPreview() {
                             <TabsTrigger value="grid" className="gap-2"><Grid className="h-4 w-4" /> Grid</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <Button
-                        onClick={() => exportAsImage("insta-preview-area", "instagram-preview")}
-                        className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:opacity-90 text-white font-bold border-0 shadow-lg"
-                    >
-                        Export Image
-                    </Button>
+                    <div className="flex flex-col items-end gap-1">
+                        <Button
+                            onClick={() => exportAsImage("insta-preview-area", "instagram-preview")}
+                            className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:opacity-90 text-white font-bold border-0 shadow-lg"
+                        >
+                            Export Image
+                        </Button>
+                        <span className="text-[10px] text-muted-foreground block lg:hidden">
+                            *iPhone users: Click twice if image is blank
+                        </span>
+                    </div>
                 </div>
             </div>
 

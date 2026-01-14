@@ -40,12 +40,17 @@ export default function LinkedinHookChecker() {
         <div className="flex flex-col gap-6 min-h-[calc(100vh-4rem)] p-6 overflow-y-auto">
             <div className="flex items-center justify-between shrink-0">
                 <h2 className="text-2xl font-bold tracking-tight">LinkedIn Hook Checker</h2>
-                <Button
-                    onClick={() => exportAsImage("linkedin-preview-card", "linkedin-preview")}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-blue-500/20"
-                >
-                    Export Preview
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                    <Button
+                        onClick={() => exportAsImage("linkedin-preview-card", "linkedin-preview")}
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-blue-500/20"
+                    >
+                        Export Preview
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground block lg:hidden">
+                        *iPhone users: Click twice if image is blank
+                    </span>
+                </div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 shrink-0 min-h-[850px]">
