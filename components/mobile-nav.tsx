@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, LayoutGrid, Youtube, Linkedin, Music, Activity, Instagram, Monitor } from "lucide-react"
+import { Menu, X, LayoutGrid, Youtube, Linkedin, Music, Activity, Instagram, Monitor, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { cn } from "@/lib/utils"
@@ -20,6 +20,7 @@ export function MobileNav() {
         { href: "/x", label: "X Preview", icon: Activity },
         { href: "/instagram", label: "Instagram Feed", icon: Instagram },
         { href: "/privacy", label: "Privacy Policy", icon: Monitor },
+        { href: "mailto:previewpost.help@gmail.com", label: "Support", icon: Mail },
     ]
 
     return (

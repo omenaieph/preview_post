@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutGrid, Linkedin, Youtube, Moon, Sun, Monitor, Music, Activity, Instagram } from "lucide-react"
+import { LayoutGrid, Linkedin, Youtube, Moon, Sun, Monitor, Music, Activity, Instagram, Mail } from "lucide-react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,6 +27,7 @@ export function MainSidebar() {
         { href: "/x", label: "X Preview", icon: Activity },
         { href: "/instagram", label: "Instagram Feed", icon: Instagram },
         { href: "/privacy", label: "Privacy Policy", icon: Monitor },
+        { href: "mailto:previewpost.help@gmail.com", label: "Support", icon: Mail },
     ]
 
     return (
