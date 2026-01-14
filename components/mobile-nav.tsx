@@ -20,7 +20,7 @@ export function MobileNav() {
         { href: "/x", label: "X Preview", icon: Activity },
         { href: "/instagram", label: "Instagram Feed", icon: Instagram },
         { href: "/privacy", label: "Privacy Policy", icon: Monitor },
-        { href: "mailto:previewpost.help@gmail.com", label: "Support", icon: Mail },
+        { href: "mailto:ephraimsdesign@gmail.com", label: "Support", icon: Mail },
     ]
 
     return (
