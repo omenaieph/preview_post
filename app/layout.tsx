@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { MainSidebar } from "@/components/main-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import CookieConsent from "react-cookie-consent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,16 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <CookieConsent
+            location="bottom"
+            buttonText="I understand"
+            cookieName="previewpost_cookie"
+            style={{ background: "#09090b", borderTop: "1px solid #27272a" }}
+            buttonStyle={{ background: "#ffffff", color: "#000000", fontSize: "13px", borderRadius: "4px", fontWeight: "600" }}
+            expires={150}
+          >
+            We use cookies to enhance the user experience and analyze traffic.{" "}
+          </CookieConsent>
         </ThemeProvider>
       </body>
     </html>
